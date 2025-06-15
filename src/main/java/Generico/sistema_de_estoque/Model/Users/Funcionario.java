@@ -1,5 +1,6 @@
 package Generico.sistema_de_estoque.Model.Users;
 
+import Generico.sistema_de_estoque.DTO.FuncionarioDTO;
 import Generico.sistema_de_estoque.Model.Produto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -13,12 +14,18 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "Funcionarios")
+@Table(name = "Funcionario")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Funcionario extends RepresentationModel<Funcionario> {
+
+    public Funcionario(FuncionarioDTO dto){
+        this.cargo = dto.cargo();
+        this.nome = dto.nome();
+        this.cpf = dto.cpf();
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
