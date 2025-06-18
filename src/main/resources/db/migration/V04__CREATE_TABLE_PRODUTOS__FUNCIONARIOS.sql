@@ -1,6 +1,6 @@
 create table Produtos_Funcionarios(
-    id_Produtos Bigint,
-    id_Funcionarios Bigint,
-    foreign key(id_Produtos) references Produto(id),
-    foreign key(id_Funcionarios) references Funcionario(id)
+    produto_id Bigint,
+    funcionario_id Bigint,
+    foreign key(produto_id) references Produto(id),
+    foreign key(funcionario_id) references Funcionario(id)
 )

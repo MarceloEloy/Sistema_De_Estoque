@@ -6,6 +6,7 @@ import Generico.sistema_de_estoque.DTO.ProdutoDTO;
 import Generico.sistema_de_estoque.Model.Produto;
 import Generico.sistema_de_estoque.Repository.CategoriaRepository;
 import Generico.sistema_de_estoque.Repository.ProdutoRepository;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,6 +25,9 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class ProdutoService {
 
     @Autowired
+    Logger logger;
+
+    @Autowired
     private CategoriaRepository categoriaRepository;
 
     @Autowired
@@ -33,6 +37,7 @@ public class ProdutoService {
         Produto produto = new  Produto(dto);
         produto.setCategoria(categoriaRepository.findById(dto.categoriaID()).get());
         produto.add(linkTo(methodOn(CategoriaController.class).findById(dto.categoriaID())).withRel("Categoria"));
+        logger.info("Post Method Occurred");
         return ResponseEntity.created(new URI("/Produto")).body(produtoRepository.save(produto));
     }
 

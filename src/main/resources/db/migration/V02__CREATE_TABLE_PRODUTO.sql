@@ -5,5 +5,4 @@ create table Produto(
     preco double,
     categoria Bigint,
     foreign key(categoria) references Categoria(id)
-
 )

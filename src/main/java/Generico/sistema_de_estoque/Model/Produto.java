@@ -46,7 +46,7 @@ public class Produto extends RepresentationModel<Produto> {
 
     @ManyToMany()
     @JsonBackReference
-    @JoinTable(name = "produtos_funcionarios",
+    @JoinTable(name = "Produtos_Funcionarios",
     joinColumns = @JoinColumn(name = "produto_id"),
     inverseJoinColumns = @JoinColumn(name = "funcionario_id")
     )
