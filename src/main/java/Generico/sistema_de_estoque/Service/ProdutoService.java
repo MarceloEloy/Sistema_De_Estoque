@@ -4,6 +4,7 @@ import Generico.sistema_de_estoque.Controller.CategoriaController;
 import Generico.sistema_de_estoque.Controller.ProdutoController;
 import Generico.sistema_de_estoque.DTO.ProdutoDTO;
 import Generico.sistema_de_estoque.Model.Produto;
+import Generico.sistema_de_estoque.Model.Users.Cargos;
 import Generico.sistema_de_estoque.Repository.CategoriaRepository;
 import Generico.sistema_de_estoque.Repository.FuncionarioRepository;
 import Generico.sistema_de_estoque.Repository.ProdutoRepository;
@@ -39,17 +40,23 @@ public class ProdutoService {
     @Autowired
     private ProdutoRepository produtoRepository;
 
-    public ResponseEntity<Produto> addProduto(ProdutoDTO dto) throws URISyntaxException {
-        Produto produto = new  Produto(dto);
-        if (!dto.funcionariosID().isEmpty()){
-        produto.setFuncionarios(dto.funcionariosID().stream().map(func -> {
-            return funcionarioRepository.findById(func).get();
-        }).collect(Collectors.toSet()));
+    public ResponseEntity<Produto> addProduto(Long idFuncionario, ProdutoDTO dto) throws URISyntaxException, RuntimeException {
+        if (funcionarioRepository.findById(idFuncionario).get().getCargo() == Cargos.GERENTE) {
+            Produto produto = new Produto(dto);
+            if (!dto.funcionariosID().isEmpty()) {
+                produto.setFuncionarios(dto.funcionariosID().stream().map(func -> {
+                    return funcionarioRepository.findById(func).get();
+                }).collect(Collectors.toSet()));
+            }
+            produto.setCategoria(categoriaRepository.findById(dto.categoriaID()).get());
+            produto.add(linkTo(methodOn(CategoriaController.class).findById(dto.categoriaID())).withRel("Categoria"));
+            logger.info("Post Method Occurred");
+            return ResponseEntity.created(new URI("/Produto")).body(produtoRepository.save(produto));
         }
-        produto.setCategoria(categoriaRepository.findById(dto.categoriaID()).get());
-        produto.add(linkTo(methodOn(CategoriaController.class).findById(dto.categoriaID())).withRel("Categoria"));
-        logger.info("Post Method Occurred");
-        return ResponseEntity.created(new URI("/Produto")).body(produtoRepository.save(produto));
+        else {
+            logger.warn("ERROR ", new RuntimeException("Funcionario abaixo do nível de operação"));
+            throw  new RuntimeException("Funcionario abaixo do nível de operação");
+        }
     }
 
     public ResponseEntity<Page<Produto>> listProduto(int page, int size){
@@ -57,9 +64,9 @@ public class ProdutoService {
         return ResponseEntity.ok(produtoRepository.findAll(pagina));
     }
 
-    public ResponseEntity<Produto> alterProduto(Long id, ProdutoDTO dto) throws URISyntaxException {
+    public ResponseEntity<Produto> alterProduto(Long idFuncionario, Long id, ProdutoDTO dto) throws URISyntaxException {
         Produto produto = produtoRepository.getReferenceById(id);
-        produto.add(linkTo(methodOn(ProdutoController.class).add(dto)).withRel("Adicionar"));
+        produto.add(linkTo(methodOn(ProdutoController.class).add(idFuncionario, dto)).withRel("Adicionar"));
 
         if (!produto.getNome().equals(dto.nome()) || !dto.nome().equals("")){
             produto.setNome(dto.nome());

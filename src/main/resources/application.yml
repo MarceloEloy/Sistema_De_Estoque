@@ -1,0 +1,12 @@
+server:
+  port:8080
+
+spring:
+  application:
+    name: sistema_de_estoque
+  datasource:
+    url: jdbc:mysql://localhost:3306/bancoEmpresa
+    driverClassName: com.mysql.jdbc.Driver
+    username: root
+    password: 1234
+

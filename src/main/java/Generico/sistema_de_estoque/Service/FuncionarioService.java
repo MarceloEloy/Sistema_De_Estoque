@@ -59,11 +59,9 @@ public class FuncionarioService {
             }
         }
         Funcionario f = new Funcionario(dto);
-        if (!f.getProdutos().isEmpty()) {
             f.setProdutos(dto.produtosID().stream().map(a -> {
                 return produtoRepository.findById(a).get();
             }).collect(Collectors.toSet()));
-        }
         f.setCpf(cpf);
         logger.info("Post Method Occurred");
         return ResponseEntity.created(new URI("/Funcionario")).body(funcionarioRepository.save(f));

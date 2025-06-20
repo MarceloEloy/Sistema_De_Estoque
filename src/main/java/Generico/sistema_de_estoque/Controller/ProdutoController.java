@@ -23,13 +23,13 @@ public class ProdutoController {
     private ProdutoService produtoService;
 
     @PostMapping
-    public ResponseEntity<Produto> add(@RequestBody ProdutoDTO dto) throws URISyntaxException {
-        return produtoService.addProduto(dto);
+    public ResponseEntity<Produto> add(@RequestParam Long idFuncionario ,@RequestBody ProdutoDTO dto) throws URISyntaxException, RuntimeException {
+        return produtoService.addProduto(idFuncionario, dto);
     }
 
     @PutMapping
-    public ResponseEntity<Produto> alter(@RequestParam Long id, @RequestBody ProdutoDTO dto) throws URISyntaxException {
-        return produtoService.alterProduto(id, dto);
+    public ResponseEntity<Produto> alter(@RequestParam Long idFuncionario, @RequestParam Long id, @RequestBody ProdutoDTO dto) throws URISyntaxException {
+        return produtoService.alterProduto(idFuncionario, id, dto);
     }
     @GetMapping
     public void get(){
