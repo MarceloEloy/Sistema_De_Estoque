@@ -3,6 +3,7 @@ package Generico.sistema_de_estoque.Controller;
 import Generico.sistema_de_estoque.DTO.FuncionarioDTO;
 import Generico.sistema_de_estoque.Model.Users.Funcionario;
 import Generico.sistema_de_estoque.Service.FuncionarioService;
+import io.swagger.v3.oas.models.OpenAPI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
@@ -14,6 +15,7 @@ import java.net.URISyntaxException;
 @RestController
 @RequestMapping("/Funcionario")
 public class FuncionarioController {
+
     @Autowired
     FuncionarioService funcionarioService;
 

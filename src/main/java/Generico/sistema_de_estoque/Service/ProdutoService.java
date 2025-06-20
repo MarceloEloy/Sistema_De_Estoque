@@ -5,6 +5,7 @@ import Generico.sistema_de_estoque.Controller.ProdutoController;
 import Generico.sistema_de_estoque.DTO.ProdutoDTO;
 import Generico.sistema_de_estoque.Model.Produto;
 import Generico.sistema_de_estoque.Repository.CategoriaRepository;
+import Generico.sistema_de_estoque.Repository.FuncionarioRepository;
 import Generico.sistema_de_estoque.Repository.ProdutoRepository;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ import org.springframework.stereotype.Service;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.stream.Collectors;
+
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -31,10 +34,18 @@ public class ProdutoService {
     private CategoriaRepository categoriaRepository;
 
     @Autowired
+    private FuncionarioRepository funcionarioRepository;
+
+    @Autowired
     private ProdutoRepository produtoRepository;
 
     public ResponseEntity<Produto> addProduto(ProdutoDTO dto) throws URISyntaxException {
         Produto produto = new  Produto(dto);
+        if (!dto.funcionariosID().isEmpty()){
+        produto.setFuncionarios(dto.funcionariosID().stream().map(func -> {
+            return funcionarioRepository.findById(func).get();
+        }).collect(Collectors.toSet()));
+        }
         produto.setCategoria(categoriaRepository.findById(dto.categoriaID()).get());
         produto.add(linkTo(methodOn(CategoriaController.class).findById(dto.categoriaID())).withRel("Categoria"));
         logger.info("Post Method Occurred");
